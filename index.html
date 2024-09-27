@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Аттестация</h1>
+    <h2 class="title" id="myElement">Асинхронность</h2>
+
+    <!--  Задание 1: "Получение данных о пользователе"
+      Реализуйте асинхронную функцию для получения данных о пользователе с удаленного сервера:
+      Функция getUserData
+      ● Описание:
+      1. Функция принимает идентификатор пользователя (ID) в качестве аргумента и использует fetch для получения данных с удаленного сервера.
+      2. Функция возвращает промис, который разрешается с объектом данных о пользователе, если запрос был успешным.
+      3. Если пользователь с указанным ID не найден, промис должен быть
+      отклонен с соответствующим сообщением об ошибке.
+      ● Последовательность действий:
+      1. Вызовите fetch, передав URL с нужным ID пользователя.
+      2. Если ответ успешен (код 200), извлеките данные с помощью
+      response.json().
+      3. Верните объект с данными о пользователе.
+      4. Если ответ не успешен, отклоните промис с сообщением об ошибке -->
+
+    <script>
+      async function getUserData(id) {
+        return fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+          .then((response) => {
+            if (response.ok) {
+              console.log(response.json());
+            } else {
+              throw new Error("User not found");
+            }
+          })
+          .catch((error) => {
+            throw new Error(error);
+          });
+      }
+      getUserData(1);
+
+      /*  Задание 2: "Отправка данных на сервер"
+      Реализуйте функцию для отправки данных о пользователе на сервер:
+      Функция saveUserData
+      ● Описание:
+      ○ Функцияпринимает объект с данными о пользователе и использует
+      fetch для отправки данных на удаленный сервер.
+      ○ Функциявозвращает промис, который разрешается, если данные
+      успешно отправлены.
+      ○ Еслизапрос неуспешен, промис должен быть отклонен с
+      соответствующим сообщением об ошибке.
+      ● Подсказка:
+      ○ Используйте метод POST и задайте заголовок Content-Type как application/json.
+      ○ Объектсданными опользователе необходимо сериализовать в
+      JSON-строку с помощью JSON.stringify(). */
+
+      function saveUserData(userData) {
+        return fetch("https://jsonplaceholder.typicode.com/users/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                "Ошибка при отправке данных: " + response.statusText
+              );
+            }
+            return response.json();
+          })
+          .catch((error) => {
+            return Promise.reject(
+              "Не удалось отправить данные: " + error.message
+            );
+          });
+      }
+      const user = {
+        id: 11,
+        name: "Ivan Ivanov",
+        username: "ivan_ivanov",
+        email: "ivanov@mail.com",
+        address: {
+            street: "Lenina Street",
+            suite: "Suite 1",
+            city: "Moscow",
+            zipcode: "900000",
+            geo: {
+                lat: "-38.2386",
+                lng: "57.2232"
+            }
+        },
+      };
+
+      saveUserData(user)
+        .then((data) => {
+          console.log("Данные успешно отправлены:", data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      /* 
+      Задание 3: "Изменение стиля элемента через заданное время"
+      Реализуйте функцию, которая изменяет стиль элемента с задержкой:
+      Функция changeStyleDelayed
+      ● Описание:
+      ○ Функцияпринимает идентификатор элемента (id) и время задержки в
+      миллисекундах (delay).
+      ○ Послеистечения времени задержки, функция должна изменить стиль
+      элемента.
+      Пример использования функции
+      changeStyleDelayed('myElement', 20 */
+
+      function changeStyleDelayed(id, delay) {
+        setTimeout(() => {
+          const element = document.getElementById(id);
+          const paragraph = document.createElement("p");
+          paragraph.textContent = "Проверка вызова через заданное время";
+          element.appendChild(paragraph);
+          element.style.color = "red";
+          element.style.fontSize = "20px";
+          element.style.border = "1px solid black";
+          element.style.padding = "10px";
+          element.style.backgroundColor = "lightgray";
+        }, delay);
+      }
+
+      changeStyleDelayed("myElement", 2000);
+    </script>
+  </body>
+</html>
